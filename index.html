@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alex's YARG Song Library</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="hero">
+
+    <img src="images/yarg-logo.png" class="logo" alt="YARG Logo">
+
+    <h1>Alex's YARG Song Library</h1>
+
+    <p>
+        Browse over <span id="songCount">0</span> custom songs
+    </p>
+
+</header>
+
+
+<section class="search-section">
+
+    <input
+        type="text"
+        id="searchBox"
+        placeholder="🔍 Search artist, song, album..."
+    >
+
+</section>
+<div class="button-bar">
+    <button id="randomButton">
+        🎲 Random Song
+    </button>
+</div>
+<section id="songDetails" class="song-details">
+
+<h2>🎵 Song Details</h2>
+
+<p><strong>Artist:</strong> <span id="detailArtist"></span></p>
+
+<p><strong>Song:</strong> <span id="detailSong"></span></p>
+
+<p><strong>Album:</strong> <span id="detailAlbum"></span></p>
+
+<p><strong>Year:</strong> <span id="detailYear"></span></p>
+
+<p><strong>Genre:</strong> <span id="detailGenre"></span></p>
+
+<p><strong>Charter:</strong> <span id="detailCharter"></span></p>
+
+</section>
+<section class="stats">
+
+    <div class="card">
+        <h2 id="artistCount">0</h2>
+        <p>🎤 Artists</p>
+    </div>
+
+    <div class="card">
+        <h2 id="albumCount">0</h2>
+        <p>💿 Albums</p>
+    </div>
+
+    <div class="card">
+        <h2 id="genreCount">0</h2>
+        <p>🎵 Genres</p>
+    </div>
+
+</section>
+
+
+<section class="table-section">
+
+<table id="songTable">
+
+<thead>
+
+<tr>
+
+<th id="artistHeader" onclick="sortSongs('Artist')">Artist</th>
+<th id="songHeader" onclick="sortSongs('Name')">Song</th>
+<th id="albumHeader" onclick="sortSongs('Album')">Album</th>
+<th id="yearHeader" onclick="sortSongs('Year')">Year</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</section>
+
+
+
+
+
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
