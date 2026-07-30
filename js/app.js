@@ -113,7 +113,25 @@ async function loadSongs() {
 
         const response = await fetch("data/songs.json");
 
-        allSongs = await response.json();
+      allSongs = await response.json();
+
+allSongs.sort((a, b) => {
+
+    const artistCompare = a.Artist.localeCompare(b.Artist, undefined, {
+        numeric: true,
+        sensitivity: "base"
+    });
+
+    if (artistCompare !== 0) return artistCompare;
+
+    return a.Name.localeCompare(b.Name, undefined, {
+        numeric: true,
+        sensitivity: "base"
+    });
+
+});
+
+songCount.textContent = allSongs.length.toLocaleString();
 
         songCount.textContent = allSongs.length.toLocaleString();
 
