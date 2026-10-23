@@ -152,24 +152,75 @@ albumCount.textContent =
 
 }
 
-searchBox.addEventListener("input", () => {
+// Normalize text for flexible searching without changing displayed song data.
+function normalizeSearchText(text) {
+    return String(text ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Ignore accents: Beyoncé -> Beyonce
+        .replace(/\$/g, "s")             // Ke$ha -> Kesha
+        .replace(/&/g, "and")            // Simon & Garfunkel -> Simon and Garfunkel
+        .replace(/[^a-zA-Z0-9]/g, "")    // Ignore spaces and punctuation
+        .toLowerCase();
+}
 
-    const search = searchBox.value.toLowerCase();
+// Search aliases are normalized just like the artist names and search query.
+// Keep these targeted: don't replace every 5 with "s" or every number with a word.
+const searchAliasGroups = [
+    ["deadmau5", "deadmaus"],
+    ["boyziimen", "boysiimen", "boys2men", "boyz2men", "boysandmen", "boystomen"],
+    ["creedenceclearwaterrevival", "ccr"],
+    ["gunsnroses", "gunsandroses", "gnr"],
+    ["pink", "pnk"], // P!nk
+    ["pxndx", "panda"],
+    ["chvrches", "churches"]
+];
+
+function getSearchVariants(text) {
+    const startingText = normalizeSearchText(text);
+    const variants = new Set([startingText]);
+    const pending = [startingText];
+
+    // Expand aliases wherever they appear in a query or a searchable field.
+    while (pending.length > 0) {
+        const current = pending.pop();
+
+        for (const group of searchAliasGroups) {
+            for (const alias of group) {
+                if (!current.includes(alias)) continue;
+
+                for (const alternative of group) {
+                    const replacement = current.replaceAll(alias, alternative);
+                    if (!variants.has(replacement)) {
+                        variants.add(replacement);
+                        pending.push(replacement);
+                    }
+                }
+            }
+        }
+    }
+
+    return [...variants];
+}
+
+function matchesSearch(fieldValue, searchVariants) {
+    const fieldVariants = getSearchVariants(fieldValue);
+
+    return fieldVariants.some(fieldText =>
+        searchVariants.some(searchText => fieldText.includes(searchText))
+    );
+}
+
+searchBox.addEventListener("input", () => {
+    const searchVariants = getSearchVariants(searchBox.value);
 
     const filtered = allSongs.filter(song =>
-
-        song.Artist.toLowerCase().includes(search) ||
-
-        song.Name.toLowerCase().includes(search) ||
-
-        song.Album.toLowerCase().includes(search) ||
-
-        song.Year.toString().includes(search)
-
+        matchesSearch(song.Artist, searchVariants) ||
+        matchesSearch(song.Name, searchVariants) ||
+        matchesSearch(song.Album, searchVariants) ||
+        matchesSearch(song.Year, searchVariants)
     );
 
     displaySongs(filtered);
-
 });
 const randomButton = document.getElementById("randomButton");
 
